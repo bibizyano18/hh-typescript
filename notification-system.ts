@@ -60,6 +60,8 @@ function renderNotification(notification : unionNotification) : string {
             return `❌  ${notification.errorCode} (${notification.message}) Retry: ${notification.retry}`
         case "warning":
             return `⚠️  ${notification.message}`
+        default:
+            return notification
     }
 }
 function isErrorNotification(notification : unionNotification) : notification is error {
