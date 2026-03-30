@@ -31,28 +31,28 @@ getUnread(notifications: TrackedNotification[]): TrackedNotification[]
  getUnread возвращает только уведомления без readAt
 */
 
-type success = {
+type Success = {
     readonly type: 'success',
     message: string,
     duration: number
 }
-type error = {
+type MyError = {
     readonly type: 'error',
     message: string,
     retry: boolean,
     errorCode: string
 }
-type warning = { readonly type: 'warning', message: string }
-type unionNotification = success | error | warning;
+type Warning = { readonly type: 'warning', message: string }
+type UnionNotification = Success | MyError | Warning;
 
 const notificationConfig = {
     success : {icon:"success", color:'green'},
     error : {icon:"error", color:'red'},
     warning: {icon:"warning", color:'yellow'}
 
-} satisfies Record<unionNotification['type'], {icon: string, color: string}>
+} satisfies Record<UnionNotification['type'], {icon: string, color: string}>
 
-function renderNotification(notification : unionNotification) : string {
+function renderNotification(notification : UnionNotification) : string {
     switch (notification.type) {
         case "success":
             return `✅  ${notification.message} (${notification.duration}ms)`
@@ -64,7 +64,7 @@ function renderNotification(notification : unionNotification) : string {
             return notification
     }
 }
-function isErrorNotification(notification : unionNotification) : notification is error {
+function isErrorNotification(notification : UnionNotification) : notification is MyError {
     return notification.type === 'error';
 }
 function getUnread(notification : TrackedNotification[]) : TrackedNotification[] {
@@ -73,9 +73,9 @@ function getUnread(notification : TrackedNotification[]) : TrackedNotification[]
     return notification.filter((x) => x.hasOwnProperty('readAt') === false)
 }
 
-type NotificationPreview = Pick<unionNotification, "type" | "message">;
-type NotificationWithoutMeta = Omit<error, "errorCode">
-type TrackedNotification = unionNotification & {
+type NotificationPreview = Pick<UnionNotification, "type" | "message">;
+type NotificationWithoutMeta = Omit<Error, "errorCode">
+type TrackedNotification = UnionNotification & {
     id: number
     createdAt: number
     readAt?: number
