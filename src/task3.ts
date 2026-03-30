@@ -16,9 +16,10 @@ function memoize<T, Args extends AllowedArg[], P>(fn: (...args: Args) => T): (..
         /* проверка, есть ли значения в кэше, если да,
          то сразу достаем значения и не
          тратим вычислительные мощности */
-        if (cache.has(key)) {
+        const value = cache.get(key);
+        if (value !== undefined) {
             console.log('cache key:', key);
-            return cache.get(key)!;
+            return value;
         }
         // иначе просто считаем функцию и запоминаем ее результат
         const result : T = fn.apply(this, args);
